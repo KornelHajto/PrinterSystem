@@ -41,34 +41,6 @@ namespace PrinterSystem.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] User user)
-        {
-            APIResponse response = new APIResponse();
-            try
-            {
-                using (SQL sql = new SQL())
-                {
-                    // Hash the user's password before saving
-                    user.Password = _passwordHasher.HashPassword(user, user.Password);
-
-                    await sql.Users.AddAsync(user);
-                    await sql.SaveChangesAsync();
-                    response.StatusCode = 200;
-                    response.Message = "User added successfully!";
-                    response.Data = user;
-                }
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                response.StatusCode = 500;
-                response.Message = "An error occurred while processing your request.";
-                response.Data = ex;
-            }
-            return BadRequest(response);
-        }
-
         //TODO: Megcsinálni a logikát az updatere, és a deletere
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromHeader] int id)
