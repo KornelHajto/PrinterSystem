@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PrinterSystem.Database;
 using PrinterSystem.Models;
+using PrinterSystem.Services;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PrinterSystem.Controllers
 {
@@ -12,8 +17,15 @@ namespace PrinterSystem.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-
+        private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        private readonly JWTService _jwtService;
+
+        public AuthController(IConfiguration configuration, JWTService jwtService)
+        {
+            _configuration = configuration;
+            _jwtService = jwtService;
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login lgm)
@@ -40,9 +52,12 @@ namespace PrinterSystem.Controllers
                         return Unauthorized(response);
                     }
 
+                    // Generate JWT token
+                    var token = _jwtService.GenerateJwtToken(user);
+
                     response.StatusCode = 200;
                     response.Message = "Login successful!";
-                    response.Data = new { UserId = user.Id, Username = user.Username, Role = user.Role };
+                    response.Data = token;
                     return Ok(response);
                 }
             }
@@ -50,13 +65,17 @@ namespace PrinterSystem.Controllers
             {
                 response.StatusCode = 500;
                 response.Message = "An error occurred while processing your request.";
-                response.Data = ex;
+                response.Data = new
+                {
+                    ErrorMessage = ex.Message,
+                    StackTrace = ex.StackTrace // Optional: Include only if needed
+                };
+                return BadRequest(response);
             }
-            return BadRequest(response);
         }
 
-
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] User user)
         {
             APIResponse response = new APIResponse();

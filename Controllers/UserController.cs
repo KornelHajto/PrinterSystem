@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrinterSystem.Database;
 using PrinterSystem.Models;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PrinterSystem.Controllers
 {
@@ -17,6 +14,7 @@ namespace PrinterSystem.Controllers
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
         [HttpGet]
+        [Authorize(Policy = "SeniorPolicy")] // Azaz legalább senior jogosultság kell a hozzáféréshez
         public async Task<IActionResult> GetUsers()
         {
             APIResponse response = new APIResponse();
@@ -41,7 +39,7 @@ namespace PrinterSystem.Controllers
             return BadRequest(response);
         }
 
-        //TODO: Megcsinálni a logikát az updatere, és a deletere
+        //TODO: Adding real logic into the update method.
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromHeader] int id)
         {
@@ -70,5 +68,7 @@ namespace PrinterSystem.Controllers
             }
             return BadRequest(response);
         }
+
+        //TODO: Adding delete method and route for user.
     }
 }

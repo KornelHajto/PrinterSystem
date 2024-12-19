@@ -58,6 +58,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "PrinterSystem.Controllers.PrintController",
+    "Method": "GetPrintByUser",
+    "RelativePath": "api/Print/{user_id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user_id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "PrinterSystem.Controllers.UserController",
     "Method": "GetUsers",
     "RelativePath": "api/User",
@@ -65,22 +81,6 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "PrinterSystem.Controllers.UserController",
-    "Method": "AddUser",
-    "RelativePath": "api/User",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "user",
-        "Type": "PrinterSystem.Models.User",
-        "IsRequired": true
-      }
-    ],
     "ReturnTypes": []
   },
   {

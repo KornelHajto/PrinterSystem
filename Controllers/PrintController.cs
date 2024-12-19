@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PrinterSystem.Database;
 using PrinterSystem.Models;
 
@@ -9,6 +8,30 @@ namespace PrinterSystem.Controllers
     [ApiController]
     public class PrintController : ControllerBase
     {
+        [HttpGet("{user_id}")]
+        public async Task<IActionResult> GetPrintByUser(int user_id)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                using (SQL sql = new SQL())
+                {
+                    var prints = sql.Prints.Where(x => x.UserId == user_id).ToList();
+                    response.StatusCode = 200;
+                    response.Message = "Sikeres lekérdezés!";
+                    response.Data = prints;
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = "An error occurred while processing your request.";
+                response.Data = ex;
+            }
+            return BadRequest(response);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetPrints()
         {

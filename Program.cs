@@ -1,7 +1,11 @@
-
 using System.Net.NetworkInformation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PrinterSystem.Database;
+using PrinterSystem.Models;
+using PrinterSystem.Services;
+using System.Text;
 
 namespace PrinterSystem
 {
@@ -13,18 +17,50 @@ namespace PrinterSystem
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //Getting connection string
+            // Getting connection string
             ConnectionString = builder.Configuration.GetConnectionString("SQL");
 
-            // Add services to the container.
+            // Configure JWT Authentication
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
+
+            // Configure Authorization Policies
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy =>
+                    policy.RequireRole(nameof(Role.Admin)));
+
+                options.AddPolicy("SeniorPolicy", policy =>
+                    policy.RequireRole(nameof(Role.Senior), nameof(Role.Admin)));
+
+                options.AddPolicy("KIBPolicy", policy =>
+                    policy.RequireRole(nameof(Role.KIB), nameof(Role.Senior), nameof(Role.Admin)));
+            });
+
+            builder.Services.AddScoped<JWTService>();
+
+            // Add services to the container
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            // Swagger/OpenAPI setup
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -33,8 +69,9 @@ namespace PrinterSystem
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-
+            // Enable Authentication and Authorization
+            app.UseAuthentication(); // This middleware validates JWT tokens
+            app.UseAuthorization();  // This middleware enforces authorization policies
 
             app.MapControllers();
 
