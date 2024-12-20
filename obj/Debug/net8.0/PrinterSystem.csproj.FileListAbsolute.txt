@@ -172,3 +172,4 @@ C:\Users\lxndr\source\repos\PrinterSystem\bin\Debug\net8.0\zh-Hant\Microsoft.Cod
 C:\Users\lxndr\source\repos\PrinterSystem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\lxndr\source\repos\PrinterSystem\obj\Debug\net8.0\PrinterSystem.sourcelink.json
 C:\Users\lxndr\source\repos\PrinterSystem\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\lxndr\source\repos\PrinterSystem\bin\Debug\net8.0\Blazored.LocalStorage.dll

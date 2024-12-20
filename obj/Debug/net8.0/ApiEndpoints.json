@@ -32,6 +32,53 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "PrinterSystem.Controllers.KIBController",
+    "Method": "GetKIBUsers",
+    "RelativePath": "api/KIB",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.KIBController",
+    "Method": "UpdateKIB",
+    "RelativePath": "api/KIB/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedKIB",
+        "Type": "PrinterSystem.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.KIBController",
+    "Method": "DeleteKIB",
+    "RelativePath": "api/KIB/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "PrinterSystem.Controllers.PrintController",
     "Method": "GetPrints",
     "RelativePath": "api/Print",
@@ -67,6 +114,79 @@
     "Parameters": [
       {
         "Name": "user_id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.PrintController",
+    "Method": "GetStatistics",
+    "RelativePath": "api/Print/statistics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.PrintController",
+    "Method": "GetPrintStats",
+    "RelativePath": "api/Print/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.SeniorController",
+    "Method": "GetSeniors",
+    "RelativePath": "api/Senior",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.SeniorController",
+    "Method": "UpdateSenior",
+    "RelativePath": "api/Senior/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedSenior",
+        "Type": "PrinterSystem.Models.User",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PrinterSystem.Controllers.SeniorController",
+    "Method": "DeleteSenior",
+    "RelativePath": "api/Senior/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
       }

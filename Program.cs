@@ -36,6 +36,18 @@ namespace PrinterSystem
                     };
                 });
 
+            //Setting up cors policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowBlazorClient", builder =>
+                {
+                    builder.WithOrigins("https://localhost:7126") // Blazor WebAssembly URL
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+            });
+
             // Configure Authorization Policies
             builder.Services.AddAuthorization(options =>
             {
@@ -68,7 +80,7 @@ namespace PrinterSystem
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowBlazorClient");
             // Enable Authentication and Authorization
             app.UseAuthentication(); // This middleware validates JWT tokens
             app.UseAuthorization();  // This middleware enforces authorization policies

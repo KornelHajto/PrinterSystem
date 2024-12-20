@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "PrinterSystem_Dev",
+    "Projects": [
+      {
+        "Path": "PrinterSystem.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\PrinterSystemUI\\PrinterSystemUI.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

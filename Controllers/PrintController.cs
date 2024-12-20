@@ -128,5 +128,105 @@ namespace PrinterSystem.Controllers
             }
             return BadRequest(response);
         }
+        [HttpGet("statistics")]
+        [Authorize(Policy = "SeniorPolicy")]
+        public IActionResult GetStatistics()
+        {
+            try
+            {
+                using (SQL sql = new SQL())
+                {
+                    var prints = sql.Prints.ToList();
+
+                    var totalBlackWhite = prints.Sum(p => p.FDb);
+                    var totalDoubleSidedBlackWhite = prints.Sum(p => p.FFDb);
+                    var totalColored = prints.Sum(p => p.SzDb);
+                    var totalDoubleSidedColored = prints.Sum(p => p.SzszDb);
+                    var totalScanning = prints.Sum(p => p.ScDb);
+
+                    var totalCash = (totalBlackWhite * 15) +
+                                    (totalDoubleSidedBlackWhite * 25) +
+                                    (totalColored * 80) +
+                                    (totalDoubleSidedColored * 150) +
+                                    (totalScanning * 10);
+
+                    var result = new
+                    {
+                        TotalBlackWhite = totalBlackWhite,
+                        TotalDoubleSidedBlackWhite = totalDoubleSidedBlackWhite,
+                        TotalColored = totalColored,
+                        TotalDoubleSidedColored = totalDoubleSidedColored,
+                        TotalScanning = totalScanning,
+                        TotalCash = totalCash
+                    };
+
+                    return Ok(new APIResponse
+                    {
+                        StatusCode = 200,
+                        Message = "Statistics fetched successfully.",
+                        Data = result
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new APIResponse
+                {
+                    StatusCode = 500,
+                    Message = "An error occurred while processing the request.",
+                    Data = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetPrintStats([FromQuery] int? userId = null)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                using (SQL sql = new SQL())
+                {
+                    var query = sql.Prints.AsQueryable();
+
+                    // Apply filter if userId is specified
+                    if (userId.HasValue)
+                    {
+                        query = query.Where(p => p.UserId == userId.Value);
+                    }
+
+                    var stats = await query
+                        .GroupBy(p => p.UserId)
+                        .Select(group => new
+                        {
+                            UserId = group.Key,
+                            Prints = group.Count()
+                        })
+                        .ToListAsync();
+
+                    // Include user details
+                    var userStats = stats.Select(s => new
+                    {
+                        UserId = s.UserId,
+                        Name = sql.Users.FirstOrDefault(u => u.Id == s.UserId)?.Username ?? "Unknown",
+                        Prints = s.Prints
+                    }).ToList();
+
+                    response.StatusCode = 200;
+                    response.Message = "Statistics fetched successfully!";
+                    response.Data = userStats;
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = "An error occurred while processing your request.";
+                response.Data = new { ex.Message, ex.StackTrace };
+                return BadRequest(response);
+            }
+        }
+
     }
 }
